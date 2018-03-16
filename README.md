@@ -27,17 +27,37 @@
 ```
 
 5. run the app: `npm run dev` and open `localhost:8080`. Create a new account
-6. Go to the Database tab in Firebase. Create a key value pair like this:
+6. Go to the Database tab in Firebase. Create key value pairs like this:
 
 ```
 settings: {
   admins: {
     your_username: true,
+  },
+}
+
+users: {
+  your_username: {
+    admin: true
   }
 }
 ```
-7. Go to the uploads tab and upload a few images. They need to be unique filenames
-8. Also host your images somewhere else (like S3), it will be cheaper to pull images from there instead of firebase
+7. Upload a JSON file w/ pointers to your images into a key-value pair called `imageCount`:
+```
+[
+  imageFilename1: {
+    ave_score: 0,
+    num_votes: 0
+  },
+  ...
+]
+```
+
+Your database should look like:
+
+![](braindr-databaseSetup.png)
+
+8. Also host your images somewhere else (like S3), it will be cheaper to pull images from there instead of firebase. The images will be found at: `https://yourS3bucket/imageFilename1.jpg`
 9. Edit the `imageBaseUrl` in `src/components/Play.vue` to point to your images. The url will have the image name appended to the end with the `.jpg` extension
 10. Start playing
 
