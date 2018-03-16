@@ -104,9 +104,18 @@
       <transition :key="swipe" :name="swipe">
         <div class="user-card" :key="currentType" v-if="currentImage">
             <div class="image_area">
-              <img class="user-card__picture mx-auto" :src="currentImage.pic"
+              <!--<img class="user-card__picture mx-auto" :src="currentImage.pic"
               v-hammer:swipe.horizontal="onSwipe"
-              ></img>
+              ></img>-->
+              <div v-if="status == 'loading'">
+                <grid-loader class="loader" color="#ffc107"></grid-loader>
+              </div>
+              <progressive-img class="user-card__picture mx-auto" :src="currentImage.pic"
+              v-hammer:swipe.horizontal="onSwipe"
+              placeholder="https://unsplash.it/500"
+              :aspect-ratio="1"
+              >
+              </progressive-img>
             </div>
           <div class="user-card__name">
             <b-button variant="danger"
@@ -259,6 +268,8 @@
 import Vue from 'vue';
 import { VueHammer } from 'vue2-hammer';
 import _ from 'lodash';
+import GridLoader from 'vue-spinner/src/PulseLoader';
+import VueProgressiveImage from '../../node_modules/vue-progressive-image/dist/vue-progressive-image';
 import { db } from '../firebaseConfig';
 
 function randomInt(min, max) {
@@ -266,15 +277,17 @@ function randomInt(min, max) {
 }
 
 Vue.use(VueHammer);
+Vue.use(VueProgressiveImage);
 
 export default {
   name: 'tutorial',
   firebase: {
-    imgCounts: db.ref('imageCount').orderByChild('adminVote').startAt(null)//.limitToFirst(50),
+    imgCounts: db.ref('imageCount').orderByChild('adminVote').startAt(null), // .limitToFirst(50),
   },
   data() {
     return {
       imgCounts: [],
+      imageBaseUrl: 'https://dxugxjm290185.cloudfront.net/braindr',
       currentType: null,
       currentImage: null,
       startTime: 0,
@@ -300,13 +313,13 @@ export default {
       return 'Swipe Left (or press left arrow) to Fail this image';
     },
   },
-  components: { VueHammer },
+  components: { VueHammer, GridLoader },
   props: ['levels'],
   watch: {
     count() {
       if (this.count === 5) {
         this.$emit('taken_tutorial', true);
-        this.$refs.tutDone.show()
+        this.$refs.tutDone.show();
       }
     },
   },
@@ -333,26 +346,26 @@ export default {
       }
     },
     setImage(type) {
-      window.scrollTo(0,0)
+      if (this.stage === 1) {
+        this.stage += 1;
+      }
+      window.scrollTo(0, 0);
       let img = null;
-      console.log('this passes', this.passes, this.fails)
+      console.log('this passes', this.passes, this.fails);
       if (type) {
         const N = this.passes.length;
         const rando = randomInt(0, N - 1);
         img = this.passes[rando];
-        console.log('here', type, img);
+        console.log('here 1', type, img);
       } else {
         const N = this.fails.length;
         const rando = randomInt(0, N - 1);
         img = this.fails[rando];
-        console.log('here', type, img);
+        console.log('here 0', type, img);
       }
       console.log('img is', img);
-      db.ref('images').child(img['.key']).once('value').then((snap) => {
-        this.currentImage = snap.val();
-        this.startTime = new Date();
-        this.currentType = type;
-      });
+      this.currentImage = { pic: `${this.imageBaseUrl}/${img['.key']}.jpg` };
+      this.currentType = img.adminVote;
     },
     setSwipe(sw) {
       console.log('setting swipe', sw);

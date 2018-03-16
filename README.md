@@ -41,25 +41,52 @@ users: {
     admin: true
   }
 }
+
+imageCount: 1
 ```
-7. Upload a JSON file w/ pointers to your images into a key-value pair called `imageCount`:
+7. Click on imageCount. Import a JSON file w/ pointers to your images into here:
 ```
-[
+{
   imageFilename1: {
     ave_score: 0,
     num_votes: 0
   },
   ...
-]
+}
 ```
+If you don't have this file, upload the `abide_images.json` file in this folder.
 
-Your database should look like:
+Your database should now look like:
 
 ![](braindr-databaseSetup.png)
 
 8. Also host your images somewhere else (like S3), it will be cheaper to pull images from there instead of firebase. The images will be found at: `https://yourS3bucket/imageFilename1.jpg`
 9. Edit the `imageBaseUrl` in `src/components/Play.vue` to point to your images. The url will have the image name appended to the end with the `.jpg` extension
-10. Start playing
+10. go to `localhost:8080/images` to see all the images. Start rating them here, making sure to mark a few passes and fails (this is for the tutorial)
+10. Start playing to test that it works
+
+11. To deploy. make a firebase directory here:
+
+```
+mkdir firebase
+cd firebase
+firebase init
+```
+
+select all the options here *except firestore*. Then choose your project, and say yes to everything else. Then do:
+
+```
+cd ..
+npm run build
+cd firebase
+cp -r ../dist/* public/
+```
+
+The `npm` step builds all your files into a single html file and a set of js files. Then we move them to the firebase `public` folder and then deploy:
+
+```
+firebase deploy
+```
 
 These instructions will probably change soon. The app is still being actively developed!
 
