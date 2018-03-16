@@ -13,6 +13,7 @@ import Unauthorized from '@/components/Unauthorized';
 import Leaderboard from '@/components/Leaderboard';
 import Tutorial from '@/components/Tutorial';
 import Viz from '@/components/Viz';
+import Images from '@/components/Images';
 import firebase from 'firebase';
 
 Vue.use(Router);
@@ -62,6 +63,15 @@ const router = new Router({
       path: '/upload',
       name: 'Upload',
       component: Upload,
+      meta: {
+        requiresAuth: true,
+        requiresAdmin: true,
+      },
+    },
+    {
+      path: '/images',
+      name: 'Images',
+      component: Images,
       meta: {
         requiresAuth: true,
         requiresAdmin: true,
