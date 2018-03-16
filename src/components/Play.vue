@@ -301,13 +301,15 @@
           this.prevImage = key;
         }
         console.log('key is', key);
+
         /*db.ref('images').child(key).once('value').then((snap) => {
           this.currentImage = snap.val();
           this.startTime = new Date();
         });*/
+        this.startTime = new Date();
         this.currentImage = `${this.imageBaseUrl}/${key}.jpg`;
         console.log(this.currentImage);
-        this.status = "ready";
+        this.status = 'ready';
       },
       getUntrustedScore(data, vote) {
         const size = data.num_votes;
@@ -361,12 +363,15 @@
               num_votes: score.size,
             });
         // send the actual vote
-        this.sendVote(0);
+        this.sendVote(0).then(()=>{
+          console.log('sent vote')
+        });
 
         this.setCurrentImage();
 
       },
       sendVote(vote) {
+        //console.log('this startTime', this.startTime);
         return db.ref('votes').push({
           username: this.userInfo.displayName,
           time: new Date() - this.startTime,
@@ -462,7 +467,9 @@
               num_votes: score.size,
             });
 
-        this.sendVote(1);
+        this.sendVote(1).then(()=>{
+          console.log('sent vote')
+        });
 
         this.setCurrentImage();
       },

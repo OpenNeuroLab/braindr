@@ -45,7 +45,7 @@
       </div>
     </div>
     <hr>
-    <input type="text" v-model="keyToUpdate"/>
+    <textarea v-model="keyToUpdate"/>
     <button type="button" class="btn btn-success" @click="updateAllScores">
       <i class="fa fa-arrow-up" aria-hidden="true"></i>
       Update scores
@@ -149,8 +149,8 @@ export default {
     };
   },
   firebase: {
-    images: db.ref('images').limitToLast(5),
-    imageCount: db.ref('imageCount'),
+    /*images: db.ref('images').limitToLast(5),*/
+    /*imageCount: db.ref('imageCount')*/
     // votes: db.ref('votes'),
   },
   methods: {
@@ -235,11 +235,13 @@ export default {
     },
 
     updateAllScores() {
-      const data = _.map(this.imageCount, (v) => {return v['.key']});
-      const N = data.length;
-      console.log(N);
+      //const data = _.map(this.imageCount, (v) => {return v['.key']});
+      //const N = data.length;
+      //console.log(N);
       const self = this;
-      (function theLoop (i) {
+      const data = this.keyToUpdate.split('\n');
+      console.log(data)
+      /*(function theLoop (i) {
         setTimeout(function () {
           console.log('updating', data[i])
           self.updateScores(data[i]);
@@ -247,7 +249,7 @@ export default {
             theLoop(i);       // Call the loop again, and pass it the current value of i
           }
         }, 3000);
-      })(3608);
+      })(data.length);*/
 
     },
 

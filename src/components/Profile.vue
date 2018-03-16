@@ -38,7 +38,7 @@
         </b-row>
       </b-container>
 
-      <b-container>
+      <!--<b-container>
         <select v-model="selectedTheme" v-on:change="setTheme">
           <option v-for="(href, name) of themes" v-bind:value="name">
             {{ name }}
@@ -46,7 +46,7 @@
         </select>
         <span>Selected: {{ selectedTheme }}</span>
 
-      </b-container>
+      </b-container>-->
 
     </b-container>
 

@@ -68,8 +68,6 @@
                    :levels="levels"
                    :currentLevel="currentLevel"
                    v-on:taken_tutorial="setTutorial"
-                   :themes="themes"
-                   v-on:theme="switchTheme"
                    />
     </div>
   </div>
@@ -165,6 +163,7 @@ export default {
     return {
       userInfo: {},
       allUsers: [],
+      Nusers: 50,
       themes: {
         default: '',
         flatly: 'https://bootswatch.com/4/flatly/bootstrap.min.css',
@@ -227,7 +226,7 @@ export default {
   },
 
   mounted() {
-    const added = Object.keys(this.themes).map(name => {
+    /*const added = Object.keys(this.themes).map(name => {
       return this.themeHelper.add(name, this.themes[name]);
     });
     console.log('added?', added);
@@ -236,11 +235,11 @@ export default {
       console.log(`${sheets.length} themes loaded`);
       this.loading = false;
       this.themeHelper.theme = 'default';
-    });
+    });*/
   },
 
   firebase: {
-    allUsers: db.ref('/users/'),
+    allUsers: db.ref('/users/').orderByChild('score'),
   },
 
   computed: {
