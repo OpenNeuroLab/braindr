@@ -164,6 +164,7 @@
         firebase.database().ref('users').child(user.displayName).set({
           score: 0,
           level: 0,
+          admin: false,
           taken_tutorial: false,
           consent: this.form.consented,
           consentedOn: new Date(),
