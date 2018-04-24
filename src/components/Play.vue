@@ -212,6 +212,8 @@
   import config from '../config';
   import VueProgressiveImage from '../../node_modules/vue-progressive-image/dist/vue-progressive-image';
 
+  window.db = db;
+
   Vue.use(VueProgressiveImage);
   Vue.use(VueHammer);
 
@@ -226,18 +228,18 @@
     name: 'play',
     firebase: {
       // images: db.ref('images'),
-      imageCount: {
-        source: db.ref('imageCount').orderByChild('num_votes').limitToFirst(30),
+      /* imageCount: {
+        source: db.ref('imageCount').orderByChild('num_votes').limitToFirst(100),
         readyCallback() {
           console.log('is ready', this.imageCount);
           this.status = 'loading';
-          /*_.map(this.imageCount, (v) => {
-            this.preloadImage(v['.key']);
-            console.log('preloaded', v['.key']);
-          });*/
+          // _.map(this.imageCount, (v) => {
+          //  this.preloadImage(v['.key']);
+          //  console.log('preloaded', v['.key']);
+          // });
           this.setCurrentImage();
         },
-      },
+      }, */ // DEBUG: uncomment for non-random
     },
     props: ['userInfo', 'userData', 'levels', 'currentLevel'],
     data() {
@@ -246,6 +248,7 @@
         currentImage: {
           pic: 'data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==', // this is a blank gray base64
         },
+        currentCount: {},
         prevImage: null,
         imageBaseUrl: config.imageBaseUrl,
         currentIndex: null,
@@ -264,9 +267,9 @@
       };
     },
     computed: {
-      currentCount() {
+      /* currentCount() {
         return this.imageCount[this.currentIndex];
-      },
+      }, */ // DEBUG: uncomment for unrandom
     },
     watch: {
       currentLevel() {
@@ -285,6 +288,7 @@
     },
     mounted() {
       this.startTime = new Date();
+      this.setCurrentImage();
     },
     components: { VueHammer, GridLoader },
     directives: {
@@ -296,27 +300,43 @@
         this.preloaded.src = `${this.imageBaseUrl}/${img}.${config.imageExt}`;
       },
       setCurrentImage() {
-        const fdata = _.filter(this.imageCount,
-          val => val.num_votes === this.imageCount[0].num_votes);
-        const N = fdata.length;
-        this.currentIndex = randomInt(0, N - 1);
-        let key = this.currentCount['.key'];
-        if (key === this.prevImage) {
-          this.currentIndex += 1;
-          key = this.currentCount['.key'];
-        } else {
-          this.prevImage = key;
-        }
-        console.log('key is', key);
+        if (!config.N) {
+          const fdata = _.filter(this.imageCount,
+            val => val.num_votes === this.imageCount[0].num_votes);
+          const N = fdata.length;
+          this.currentIndex = randomInt(0, N - 1);
+          let key = this.currentCount['.key'];
+          if (key === this.prevImage) {
+            this.currentIndex += 1;
+            key = this.currentCount['.key'];
+          } else {
+            this.prevImage = key;
+          }
+          console.log('key is', key);
 
-        /*db.ref('images').child(key).once('value').then((snap) => {
-          this.currentImage = snap.val();
           this.startTime = new Date();
-        });*/
-        this.startTime = new Date();
-        this.currentImage = `${this.imageBaseUrl}/${key}.${config.imageExt}`;
-        console.log(this.currentImage);
-        this.status = 'ready';
+          this.currentImage = `${this.imageBaseUrl}/${key}.${config.imageExt}`;
+          console.log(this.currentImage);
+          this.status = 'ready';
+        } else {
+          const idx = randomInt(0, config.N - 1);
+          console.log('getting a totally random image', idx);
+          db.ref('imageCount').orderByChild('idx').startAt(idx)
+            .limitToFirst(1)
+            .once('value')
+            .then((snap) => {
+              console.log('snap is', snap, snap.val(), snap.key, idx);
+              const data = snap.val();
+              const key = Object.keys(data)[0];
+              data[key]['.key'] = key;
+              console.log('data snap is', data);
+              this.currentImage = `${this.imageBaseUrl}/${key}.${config.imageExt}`;
+              this.currentCount = data[key];
+              console.log(this.currentImage);
+              this.startTime = new Date();
+              this.status = 'ready';
+            });
+        }
       },
       getUntrustedScore(data, vote) {
         const size = data.num_votes;
@@ -363,22 +383,22 @@
         db.ref('users').child(this.userInfo.displayName)
           .child('score').set(this.userData.score + score.score);
         // set the image count
-        this.$firebaseRefs.imageCount
+        // this.$firebaseRefs.imageCount
+        db.ref('imageCount')
             .child(this.currentCount['.key'])
             .set({
               ave_score: score.ave,
               num_votes: score.size,
             });
         // send the actual vote
-        this.sendVote(0).then(()=>{
-          console.log('sent vote')
+        this.sendVote(0).then(() => {
+          console.log('sent vote');
         });
 
         this.setCurrentImage();
-
       },
       sendVote(vote) {
-        //console.log('this startTime', this.startTime);
+        // console.log('this startTime', this.startTime);
         return db.ref('votes').push({
           username: this.userInfo.displayName,
           time: new Date() - this.startTime,
@@ -450,7 +470,8 @@
             db.ref('users').child(this.userInfo.displayName)
               .child('score').set(this.userData.score + score.score);
 
-            this.$firebaseRefs.imageCount
+            // this.$firebaseRefs.imageCount
+            db.ref('imageCount')
                 .child(this.currentCount['.key'])
                 .set({
                   ave_score: score.ave,
