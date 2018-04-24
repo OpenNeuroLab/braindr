@@ -15,6 +15,7 @@ import Tutorial from '@/components/Tutorial';
 import Viz from '@/components/Viz';
 import Images from '@/components/Images';
 import firebase from 'firebase';
+import config from '../config';
 
 Vue.use(Router);
 
@@ -127,7 +128,7 @@ router.beforeEach((to, from, next) => {
       firebase.database().ref(`/users/${currentUser.displayName}`).once('value')
         .then((snap) => {
           const data = snap.val();
-          if (!data.taken_tutorial) {
+          if (!data.taken_tutorial && config.needsTutorial) {
             next('tutorial');
           }
         });

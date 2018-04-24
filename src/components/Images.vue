@@ -102,6 +102,7 @@ import numeral from 'numeral';
 import Vue from 'vue';
 import VueLazyload from 'vue-lazyload';
 import { db } from '../firebaseConfig';
+import config from '../config';
 // import '../assets/sass-compiled.css';
 Vue.filter('formatNumber', value => numeral(value).format('0.0[0]'));
 
@@ -112,12 +113,12 @@ export default {
   data() {
     return {
       imageCount: [],
-      imageBaseUrl: 'https://dxugxjm290185.cloudfront.net/braindr',
+      imageBaseUrl: config.imageBaseUrl,
     };
   },
   methods: {
     getUrl(key) {
-      return `${this.imageBaseUrl}/${key}.jpg`;
+      return `${this.imageBaseUrl}/${key}.${config.imageExt}`;
     },
     getStyle(img) {
       const c = img.ave_score < 0.5 ? '#dc35457d' : '#28a74573';

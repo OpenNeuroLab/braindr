@@ -68,7 +68,7 @@ a {
 
 .landing {
   background-color: white;
-  background-image: url('../assets/mainGIF.gif');
+  background-image: url('../assets/icaGIF.gif');
   background-repeat: no-repeat;
   background-position: center;
   height: 80vh;

@@ -166,6 +166,11 @@
     display: block;
 }
 
+.progressive-image-main {
+  width: 100%;
+  height: 100%;
+}
+
 .image_area {
   background: black;
 }
@@ -271,6 +276,7 @@ import _ from 'lodash';
 import GridLoader from 'vue-spinner/src/PulseLoader';
 import VueProgressiveImage from '../../node_modules/vue-progressive-image/dist/vue-progressive-image';
 import { db } from '../firebaseConfig';
+import config from '../config';
 
 function randomInt(min, max) {
   return Math.floor(Math.random() * ((max - min) + 1)) + min;
@@ -287,7 +293,7 @@ export default {
   data() {
     return {
       imgCounts: [],
-      imageBaseUrl: 'https://dxugxjm290185.cloudfront.net/braindr',
+      imageBaseUrl: config.imageBaseUrl,
       currentType: null,
       currentImage: null,
       startTime: 0,
@@ -364,7 +370,7 @@ export default {
         console.log('here 0', type, img);
       }
       console.log('img is', img);
-      this.currentImage = { pic: `${this.imageBaseUrl}/${img['.key']}.jpg` };
+      this.currentImage = { pic: `${this.imageBaseUrl}/${img['.key']}.${config.imageExt}` };
       this.currentType = img.adminVote;
     },
     setSwipe(sw) {

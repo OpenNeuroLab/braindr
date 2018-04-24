@@ -89,11 +89,17 @@
 
   .user-card__picture {
       width: 100%;
+      height: 100%;
       display: block;
   }
 
+  .progressive-image-main {
+    width: 100%;
+    height: 100% !important;
+  }
+
   .image_area {
-    background: black;
+    background: white !important;
     position: relative;
   }
 
@@ -203,6 +209,7 @@
   import imagesLoaded from 'vue-images-loaded';
   import GridLoader from 'vue-spinner/src/PulseLoader';
   import { db } from '../firebaseConfig';
+  import config from '../config';
   import VueProgressiveImage from '../../node_modules/vue-progressive-image/dist/vue-progressive-image';
 
   Vue.use(VueProgressiveImage);
@@ -240,7 +247,7 @@
           pic: 'data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==', // this is a blank gray base64
         },
         prevImage: null,
-        imageBaseUrl: 'https://dxugxjm290185.cloudfront.net/braindr',
+        imageBaseUrl: config.imageBaseUrl,
         currentIndex: null,
         imageCount: [],
         preloaded: null,
@@ -286,7 +293,7 @@
     methods: {
       preloadImage(img) {
         this.preloaded = new Image();
-        this.preloaded.src = `${this.imageBaseUrl}/${img}.jpg`;
+        this.preloaded.src = `${this.imageBaseUrl}/${img}.${config.imageExt}`;
       },
       setCurrentImage() {
         const fdata = _.filter(this.imageCount,
@@ -307,7 +314,7 @@
           this.startTime = new Date();
         });*/
         this.startTime = new Date();
-        this.currentImage = `${this.imageBaseUrl}/${key}.jpg`;
+        this.currentImage = `${this.imageBaseUrl}/${key}.${config.imageExt}`;
         console.log(this.currentImage);
         this.status = 'ready';
       },

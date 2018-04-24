@@ -92,6 +92,7 @@
 
   import firebase from 'firebase';
   import Terms from '@/components/Terms';
+  import config from '../config';
 
   export default {
     name: 'signup',
@@ -175,8 +176,12 @@
           displayName: this.form.username,
         }).then(() => {
             // Profile updated successfully!
-          this.$router.replace('tutorial');
           this.insertUser(user);
+          if (config.needsTutorial) {
+            this.$router.replace('tutorial');
+          } else {
+            this.$router.replace('play');
+          }
         }, (err) => {
             // An error happened.
           this.errors.show = true;
