@@ -1,5 +1,5 @@
 export default {
   needsTutorial: false,
-  imageBaseUrl: 'https://dxugxjm290185.cloudfront.net/braindr-ica',
-  imageExt: 'png',
+  imageBaseUrl: 'http://himatdata.s3.amazonaws.com/whaledr',
+  imageExt: 'jpg',
 };
