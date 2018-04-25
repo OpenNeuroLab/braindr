@@ -12,7 +12,7 @@
     <div class="main">
       <transition :key="swipe" :name="swipe" >
         <div class="user-card" :key="currentIndex">
-            <div class="image_area">
+            <div class="image_area" @click="playSound">
               <div v-if="status == 'loading'">
                 <grid-loader class="loader" color="#ffc107"></grid-loader>
               </div>
@@ -259,6 +259,7 @@
         dismissSecs: 1,
         pointsAward: null,
         dismissCountDown: 0,
+        currentAudio: null,
         score: {
           variant: 'warning',
           message: '',
@@ -295,6 +296,12 @@
       imagesLoaded,
     },
     methods: {
+      playSound() {
+        const soundUrl = this.currentImage.replace('.jpg', '.wav');
+        const audio = new Audio(soundUrl);
+        this.currentAudio = audio;
+        audio.play();
+      },
       preloadImage(img) {
         this.preloaded = new Image();
         this.preloaded.src = `${this.imageBaseUrl}/${img}.${config.imageExt}`;
@@ -335,6 +342,7 @@
               console.log(this.currentImage);
               this.startTime = new Date();
               this.status = 'ready';
+              this.playSound();
             });
         }
       },
@@ -488,15 +496,15 @@
         db.ref('users').child(this.userInfo.displayName)
           .child('score').set(this.userData.score + score.score);
         // set the image count
-        this.$firebaseRefs.imageCount
+        db.ref('imageCount')
             .child(this.currentCount['.key'])
             .set({
               ave_score: score.ave,
               num_votes: score.size,
             });
 
-        this.sendVote(1).then(()=>{
-          console.log('sent vote')
+        this.sendVote(1).then(() => {
+          console.log('sent vote');
         });
 
         this.setCurrentImage();

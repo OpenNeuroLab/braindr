@@ -27,7 +27,7 @@ export default {
   name: 'Home',
   data() {
     return {
-      msg: 'braindr.',
+      msg: 'whaledr.',
     };
   },
 };
@@ -68,7 +68,7 @@ a {
 
 .landing {
   background-color: white;
-  background-image: url('../assets/icaGIF.gif');
+  background-image: url('../assets/whaldrStatic.png');
   background-repeat: no-repeat;
   background-position: center;
   height: 80vh;
