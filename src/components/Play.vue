@@ -10,6 +10,7 @@
     </b-modal>
 
     <div class="main">
+      date: {{currentCount['.key']}}
       <transition :key="swipe" :name="swipe" >
         <div class="user-card" :key="currentIndex">
             <div class="image_area" @click="playSound">
@@ -297,10 +298,18 @@
     },
     methods: {
       playSound() {
+        if (this.currentAudio) {
+          this.currentAudio.pause();
+          this.currentAudio = null;
+        }
         const soundUrl = this.currentImage.replace('.jpg', '.wav');
         const audio = new Audio(soundUrl);
         this.currentAudio = audio;
         audio.play();
+        const self = this;
+        audio.onended = function setEnd() {
+          self.currentAudio = null;
+        };
       },
       preloadImage(img) {
         this.preloaded = new Image();

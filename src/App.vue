@@ -26,7 +26,6 @@
           <b-nav-item to="/" exact>Home</b-nav-item>
           <b-nav-item to="/leaderboard">Leaderboard</b-nav-item>
           <b-nav-item to="/play">Play</b-nav-item>
-          <b-nav-item to="/upload" v-if="userData.admin">Upload</b-nav-item>
         </b-navbar-nav>
 
         <!-- Right aligned nav items -->
@@ -83,7 +82,6 @@
             <td class="align-middle text-center text-white">
               <router-link to="/about" class="text-white">About</router-link>
               <br>
-              <router-link to="/viz" class="text-white">Data Visualization </router-link>
             </td>
           </tr>
           <tr>
