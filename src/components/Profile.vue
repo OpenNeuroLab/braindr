@@ -45,11 +45,20 @@
         Your discussions on specific sound clips
       </p>
 
-      <p v-for="c in chats" v-if="chats.length" class="text-left">
-        <router-link :to="'/listen/' + c">{{c}}</router-link>:
-        <span v-if="chatInfo[c]"><b>{{chatInfo[c].username}}</b>
-        {{chatInfo[c].message}}</span>
-      </p>
+      <div v-for="c in chats" v-if="chats.length" class="text-left">
+        <div v-if="chatInfo[c]">
+          <b-alert :show="chatInfo[c].notify">
+            <router-link :to="'/listen/' + c">{{c}}</router-link>:
+            <b>{{chatInfo[c].username}}</b>
+            {{chatInfo[c].message}}
+          </b-alert>
+          <b-alert :show="!chatInfo[c].notify" variant="light">
+            <router-link :to="'/listen/' + c">{{c}}</router-link>:
+            <b>{{chatInfo[c].username}}</b>
+            {{chatInfo[c].message}}
+          </b-alert>
+        </div>
+      </div>
 
       <!--<b-container>
         <select v-model="selectedTheme" v-on:change="setTheme">
@@ -113,6 +122,7 @@ export default {
           .on('value', (snap) => {
             const data = snap.val();
             this.chatInfo[c] = data[Object.keys(data)[0]];
+            this.getNotifications(c);
             this.$forceUpdate();
           });
       });
@@ -129,6 +139,18 @@ export default {
         this.chats = Object.keys(data);
         console.log('this chats', this.chats);
       });
+    },
+    getNotifications(key) {
+      db.ref('notifications')
+        .child(this.userData['.key'])
+        .child(key)
+        .on('value', (snap) => {
+          console.log('notifications for', snap.val());
+          if (snap.val()) {
+            this.chatInfo[key].notify = true;
+            this.$forceUpdate();
+          }
+        });
     },
   },
 };

@@ -338,14 +338,23 @@
         db.ref('imageChat').child(key).push({
           username: this.userData['.key'],
           message: this.chatMessage,
-          time: new Date(),
+          time: new Date().toISOString(),
         });
         db.ref('userChat').child(this.userData['.key']).child(key).set({
           watch: 1,
-          seen: true,
         });
         this.chatMessage = '';
         // TODO: need to add a flag to all other users following this chat.
+        const usersToNotify = [];
+        this.chatOrder.forEach((v) => {
+          if (usersToNotify.indexOf(v.username) < 0 && v.username !== this.userData['.key']) {
+            usersToNotify.push(v.username);
+          }
+        });
+        usersToNotify.forEach((u) => {
+          db.ref('notifications').child(u).child(key).set(true);
+        });
+        console.log('users to notify', usersToNotify);
       },
       setCurrentImage() {
         db.ref('imageCount').child(this.$route.params.key)
@@ -389,10 +398,11 @@
                 this.chatHistory = chatData;
               });
 
-            db.ref('userChat').child(this.userData['.key'])
+            // TODO: only do this if this key is in the notifications/username tho
+            db.ref('notifications')
+              .child(this.userData['.key'])
               .child(key)
-              .child('seen')
-              .set(true);
+              .set(false);
           });
       },
       getUntrustedScore(data, vote) {
