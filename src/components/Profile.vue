@@ -38,6 +38,19 @@
         </b-row>
       </b-container>
 
+      <hr>
+
+      <h2> WhaleChats </h2>
+      <p class="lead">
+        Your discussions on specific sound clips
+      </p>
+
+      <p v-for="c in chats" v-if="chats.length" class="text-left">
+        <router-link :to="'/listen/' + c">{{c}}</router-link>:
+        <span v-if="chatInfo[c]"><b>{{chatInfo[c].username}}</b>
+        {{chatInfo[c].message}}</span>
+      </p>
+
       <!--<b-container>
         <select v-model="selectedTheme" v-on:change="setTheme">
           <option v-for="(href, name) of themes" v-bind:value="name">
@@ -68,18 +81,54 @@
 </style>
 
 <script>
+import _ from 'lodash';
+import { db } from '../firebaseConfig';
+
 export default {
   name: 'profile',
   data() {
     return {
       selectedTheme: null,
+      chats: [],
+      chatInfo: {},
     };
   },
   // the parent component feeds these vars to this component
   props: ['userInfo', 'userData', 'levels', 'currentLevel', 'themes'],
+  mounted() {
+    if (this.userData['.key']) {
+      this.getUserChats();
+    }
+  },
+  watch: {
+    userData() {
+      if (this.userData['.key']) {
+        console.log('user is', this.userData['.key']);
+        this.getUserChats();
+      }
+    },
+    chats() {
+      this.chats.forEach((c) => {
+        db.ref('imageChat').child(c).orderByKey().limitToLast(1)
+          .on('value', (snap) => {
+            const data = snap.val();
+            this.chatInfo[c] = data[Object.keys(data)[0]];
+            this.$forceUpdate();
+          });
+      });
+    },
+  },
   methods: {
     setTheme() {
       this.$emit('theme', this.selectedTheme);
+    },
+    getUserChats() {
+      db.ref('userChat').child(this.userData['.key']).on('value', (snap) => {
+        const data = snap.val();
+        console.log(data);
+        this.chats = Object.keys(data);
+        console.log('this chats', this.chats);
+      });
     },
   },
 };

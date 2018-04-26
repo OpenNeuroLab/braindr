@@ -46,11 +46,14 @@
 
     </div>
     <div class="imageChat container">
-      <h3 class="mb-2">Discussion</h3>
-      <div class="chatHistory pl-3 pr-3 pt-3 pb-3 mb-3">
+      <h3 class="mb-2">Whale Chat</h3>
+      <div class="chatHistory pl-3 pr-3 pt-3 pb-3 mb-3" v-if="chatOrder.length">
         <p v-for="msg in chatOrder" class="text-left">
           <b>{{msg.username}}</b>: {{msg.message}}
         </p>
+      </div>
+      <div v-else>
+        <p>No one has said anything yet!</p>
       </div>
       <b-form @submit="sendChat">
         <b-form-group id="exampleInputGroup1"
@@ -329,7 +332,8 @@
           self.currentAudio = null;
         };
       },
-      sendChat() {
+      sendChat(e) {
+        e.preventDefault();
         const key = this.$route.params.key;
         db.ref('imageChat').child(key).push({
           username: this.userData['.key'],
@@ -338,8 +342,10 @@
         });
         db.ref('userChat').child(this.userData['.key']).child(key).set({
           watch: 1,
+          seen: true,
         });
         this.chatMessage = '';
+        // TODO: need to add a flag to all other users following this chat.
       },
       setCurrentImage() {
         db.ref('imageCount').child(this.$route.params.key)
@@ -382,6 +388,11 @@
                 const chatData = snap2.val();
                 this.chatHistory = chatData;
               });
+
+            db.ref('userChat').child(this.userData['.key'])
+              .child(key)
+              .child('seen')
+              .set(true);
           });
       },
       getUntrustedScore(data, vote) {

@@ -10,7 +10,7 @@
     </b-modal>
 
     <div class="main">
-      date: {{currentCount['.key']}}
+      date:<router-link :to="'/listen/' + currentCount['.key']">  {{currentCount['.key']}} </router-link>
       <transition :key="swipe" :name="swipe" >
         <div class="user-card" :key="currentIndex">
             <div class="image_area" @click="playSound">
