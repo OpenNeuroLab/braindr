@@ -152,7 +152,7 @@
         firebase.auth().createUserWithEmailAndPassword(this.form.email, this.form.password).then(
           (user) => {
             console.log('user created', user);
-            this.updateProfile(user);
+            this.updateProfile(user.user);
           }, (err) => {
           console.log('error', err);
           this.errors.show = true;
