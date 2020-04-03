@@ -240,7 +240,7 @@
           pic: 'data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==', // this is a blank gray base64
         },
         prevImage: null,
-        imageBaseUrl: 'https://dxugxjm290185.cloudfront.net/braindr',
+        imageBaseUrl: 'https://s3.us-east-1.amazonaws.com/fcp-indi/data/Projects/RocklandSample/Outputs/qc_images',
         currentIndex: null,
         imageCount: [],
         preloaded: null,

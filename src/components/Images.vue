@@ -112,7 +112,7 @@ export default {
   data() {
     return {
       imageCount: [],
-      imageBaseUrl: 'https://dxugxjm290185.cloudfront.net/braindr',
+      imageBaseUrl: 'https://s3.us-east-1.amazonaws.com/fcp-indi/data/Projects/RocklandSample/Outputs/qc_images',
     };
   },
   methods: {

@@ -287,7 +287,7 @@ export default {
   data() {
     return {
       imgCounts: [],
-      imageBaseUrl: 'https://dxugxjm290185.cloudfront.net/braindr',
+      imageBaseUrl: 'https://s3.us-east-1.amazonaws.com/fcp-indi/data/Projects/RocklandSample/Outputs/qc_images',
       currentType: null,
       currentImage: null,
       startTime: 0,
