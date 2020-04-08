@@ -18,3 +18,5 @@ selenium-debug.log
 
 # firebase
 src/firebaseConfig.js
+*firebaseConfig.js
+firebase*
